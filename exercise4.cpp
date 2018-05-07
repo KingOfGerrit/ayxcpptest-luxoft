@@ -60,22 +60,22 @@ namespace AyxCppTest
 			REQUIRE(counter.GetTotalSize() == 8.0);
 		}
 		
-		auto b = std::chrono::system_clock::now();
-		for (unsigned nTry = 0; nTry<20; ++nTry)
-		{
-			RectangleSizeCounter counter;
+        auto b = std::chrono::system_clock::now();
+        for (unsigned nTry = 0; nTry<20; ++nTry)
+        {
+            RectangleSizeCounter counter;
 
-			const int num_threads{ 4 };
-			std::thread t[num_threads];
+            const int num_threads = 4;
+            std::thread t[num_threads];
 
-			for (int i = 0; i < num_threads; ++i)
-				t[i] = std::thread([&counter, &rectangles, i]() {counter.AddRectangle(rectangles[i]); });
+            for (int i = 0; i < num_threads; i++)
+                t[i] = std::thread([&counter, &rectangles, i]() { counter.AddRectangle(rectangles[i]); });
 
-			for (int i = 0; i < num_threads; ++i)
-				t[i].join();
+            for (int i = 0; i < num_threads; i++)
+                t[i].join();
 
-			REQUIRE(counter.GetTotalSize() == 8.0);
-		}
+            REQUIRE(counter.GetTotalSize() == 8.0);
+        }
 		REQUIRE(std::chrono::milliseconds(400) > std::chrono::system_clock::now() - b);
 		REQUIRE(std::chrono::milliseconds(100) < std::chrono::system_clock::now() - b);
 
